@@ -8,57 +8,60 @@ require("nn")
 -- The namespace
 config = {}
 
-local alphabet = "abcdefghijklmnopqrstuvwxyz0123456789-,;.!?:'\"/\\|_@#$%^&*~`+-=<>()[]{}"
+--local alphabet = "abcdefghijklmnopqrstuvwxyz0123456789-,;.!?:'\"/\\|_@#$%^&*~`+-=<>()[]{}"
+local buckwalter = "'|>&<}AbptvjHxd*rzs$SDTZEg_fqklmnhwyYFNKaui~o`{PJVGIOW"
+local other_symbols = "0123456789-,;.!:/\\@#%^*+-=()[]"
+local alphabet = buckwalter .. other_symbols
 
 -- Training data
 config.train_data = {}
-config.train_data.file = paths.concat(paths.cwd(), "../data/train.t7b")
+config.train_data.file = paths.concat(paths.cwd(), "../data/task2-train.nodup.train.t7b")
 config.train_data.alphabet = alphabet
 config.train_data.length = 1014
-config.train_data.batch_size = 128
+config.train_data.batch_size = 32
 
 -- Validation data
 config.val_data = {}
-config.val_data.file =  paths.concat(paths.cwd(), "../data/test.t7b")
+config.val_data.file =  paths.concat(paths.cwd(), "../data/task2-train.nodup.dev.t7b")
 config.val_data.alphabet = alphabet
 config.val_data.length = 1014
-config.val_data.batch_size = 128
+config.val_data.batch_size = 32
 
 -- The model
 config.model = {}
 -- #alphabet x 1014
-config.model[1] = {module = "nn.TemporalConvolution", inputFrameSize = #alphabet, outputFrameSize = 256, kW = 7}
+config.model[1] = {module = "nn.TemporalConvolution", inputFrameSize = #alphabet, outputFrameSize = 128, kW = 7}
 config.model[2] = {module = "nn.Threshold"}
 config.model[3] = {module = "nn.TemporalMaxPooling", kW = 3, dW = 3}
--- 336 x 256
-config.model[4] = {module = "nn.TemporalConvolution", inputFrameSize = 256, outputFrameSize = 256, kW = 7}
+-- 336 x 128
+config.model[4] = {module = "nn.TemporalConvolution", inputFrameSize = 128, outputFrameSize = 128, kW = 7}
 config.model[5] = {module = "nn.Threshold"}
 config.model[6] = {module = "nn.TemporalMaxPooling", kW = 3, dW = 3}
--- 110 x 256
-config.model[7] = {module = "nn.TemporalConvolution", inputFrameSize = 256, outputFrameSize = 256, kW = 3}
+-- 110 x 128
+config.model[7] = {module = "nn.TemporalConvolution", inputFrameSize = 128, outputFrameSize = 128, kW = 3}
 config.model[8] = {module = "nn.Threshold"}
--- 108 x 256
-config.model[9] = {module = "nn.TemporalConvolution", inputFrameSize = 256, outputFrameSize = 256, kW = 3}
+-- 108 x 128
+config.model[9] = {module = "nn.TemporalConvolution", inputFrameSize = 128, outputFrameSize = 128, kW = 3}
 config.model[10] = {module = "nn.Threshold"}
--- 106 x 256
-config.model[11] = {module = "nn.TemporalConvolution", inputFrameSize = 256, outputFrameSize = 256, kW = 3}
+-- 106 x 128
+config.model[11] = {module = "nn.TemporalConvolution", inputFrameSize = 128, outputFrameSize = 128, kW = 3}
 config.model[12] = {module = "nn.Threshold"}
--- 104 x 256
-config.model[13] = {module = "nn.TemporalConvolution", inputFrameSize = 256, outputFrameSize = 256, kW = 3}
+-- 104 x 128
+config.model[13] = {module = "nn.TemporalConvolution", inputFrameSize = 128, outputFrameSize = 128, kW = 3}
 config.model[14] = {module = "nn.Threshold"}
 config.model[15] = {module = "nn.TemporalMaxPooling", kW = 3, dW = 3}
--- 34 x 256
-config.model[16] = {module = "nn.Reshape", size = 8704}
--- 8704
-config.model[17] = {module = "nn.Linear", inputSize = 8704, outputSize = 1024}
+-- 34 x 128
+config.model[16] = {module = "nn.Reshape", size = 4352}
+-- 4352
+config.model[17] = {module = "nn.Linear", inputSize = 4352, outputSize = 512}
 config.model[18] = {module = "nn.Threshold"}
 config.model[19] = {module = "nn.Dropout", p = 0.5}
+-- 512
+--config.model[20] = {module = "nn.Linear", inputSize = 512, outputSize = 512}
+--config.model[21] = {module = "nn.Threshold"}
+--config.model[22] = {module = "nn.Dropout", p = 0.5}
 -- 1024
-config.model[20] = {module = "nn.Linear", inputSize = 1024, outputSize = 1024}
-config.model[21] = {module = "nn.Threshold"}
-config.model[22] = {module = "nn.Dropout", p = 0.5}
--- 1024
-config.model[23] = {module = "nn.Linear", inputSize = 1024, outputSize = 14}
+config.model[23] = {module = "nn.Linear", inputSize = 512, outputSize = 5}
 config.model[24] = {module = "nn.LogSoftMax"}
 
 -- The loss

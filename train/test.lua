@@ -42,6 +42,7 @@ function Test:run(logfunc)
    self.l = 0
    self.n = 0
    if self.confusion then self.confusion:zero() end
+   self.predictions = {}
 
    -- Start the loop
    self.clock = sys.clock()
@@ -74,6 +75,7 @@ function Test:run(logfunc)
       if self.confusion then
 	 for i = 1,n do
 	    self.confusion[labels[i]][self.decision[i]] = self.confusion[labels[i]][self.decision[i]]+1
+	    table.insert(self.predictions, self.decision[i])
 	 end
       end
       self.n = self.n + n
@@ -88,4 +90,5 @@ function Test:run(logfunc)
    end
    -- Average on the confusion matrix
    if self.confusion and self.n ~= 0 then self.confusion:div(self.n) end
+   
 end

@@ -154,7 +154,9 @@ function main.run()
       main.record[#main.record+1] = {train_error = main.test_train.e,
 				     train_loss = main.test_train.l,
 				     val_error = main.test_val.e,
-				     val_loss = main.test_val.l}
+				     val_loss = main.test_val.l, 
+			             train_predictions = main.test_train.predictions, 
+			             val_predictions = main.test_val.predictions}
       if config.test.confusion then
 	 main.record[#main.record].train_confusion = main.test_train.confusion:clone()
 	 main.record[#main.record].val_confusion = main.test_val.confusion:clone()

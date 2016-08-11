@@ -151,7 +151,9 @@ function Data:iterator(static, data)
 end
 
 function Data:stringToTensor(str, l, input, p)
-   local s = str:lower()
+   -- do not lower case buckwalter format
+   -- local s = str:lower()
+   local s = str
    local l = l or #s
    local t = input or torch.Tensor(#self.alphabet, l)
    t:zero()
